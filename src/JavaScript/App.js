@@ -1,23 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
-import api from "./api";
+import React from 'react';
+import { View, Text } from 'react-native';
+
+import Search from './components/Search';
 
 const App = () => {
-  const [beers, setBeers] = useState([]);
-
-  useEffect(() => {
-    api("/random")
-      .then(response => setBeers(response))
-      .catch(error => console.error(error));
-  }, []);
-
   return (
     <View>
-      <Text>Random beer:</Text>
-
-      {beers.map(beer => (
-        <Text key={`beer-${beer.id}`}>{beer.name}</Text>
-      ))}
+      <Text>The Awesome Beer Xperience</Text>
+      <Search />
     </View>
   );
 };
