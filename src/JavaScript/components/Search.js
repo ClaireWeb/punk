@@ -1,61 +1,77 @@
 import React, { useState } from 'react';
-import { Text, View, TextInput } from 'react-native';
+import { View, TextInput, Text, Image } from 'react-native';
 import api from '../api';
+import Loader from '../../loader.gif';
+
+import BeerList from './BeerList';
 
 const Search = () => {
   const [beers, setBeers] = useState([]);
-  const [name, setName] = useState('');
-  const [abv, setAbv] = useState('');
+  const [query, setQuery] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
-  // useEffect(() => {
-  //   api('/random')
-  //     .then(response => setBeers(response))
-  //     .catch(error => console.error(error));
-  // }, []);
-
-  const urlConstructor = (elt1, elt2) => {
-    let url = '';
-    if (elt1 && elt2) {
-      url = `?beer_name=${elt1}&abv_gt=${elt2}&per_page=10`;
-    }
-    if (elt1 && !elt2) {
-      url = `?beer_name=${elt1}&per_page=10`;
-    }
-    if (!elt1 && elt2) {
-      url = `?abv_gt=${elt2}&per_page=10`;
-    }
-    return url;
+  const fetchBeers = (updatedPageNb = '', query) => {
+    const pageNumber = updatedPageNb ? `&page=${updatedPageNb}` : '';
+    const searchUrl = `?beer_name=${query}${pageNumber}&per_page=10`;
+    api(searchUrl)
+      .then(res => {
+        const resultNotFoundMsg = !res.length
+          ? 'There are no more search results. Please try a new search'
+          : '';
+        setBeers(res);
+        setMessage(resultNotFoundMsg);
+        setLoading(false);
+      })
+      .catch(error => {
+        setLoading(false);
+        setMessage('Failed to fetch the beers.');
+      });
   };
 
-  const handleChange = (name, abv) => {
-    setName(name);
-    setAbv(abv);
-    api(urlConstructor(name, abv))
-      .then(response => setBeers(response))
-      .catch(error => console.error(error));
+  const handleChange = async query => {
+    if (!query) {
+      setQuery(query);
+      setBeers([]);
+      setMessage('');
+    } else {
+      setQuery(query);
+      setLoading(true);
+      setMessage('');
+      await fetchBeers(1, query);
+    }
   };
 
   return (
     <View>
+      {/* Search input */}
+
       <TextInput
-        style={{ height: 40, border: '1px solid black' }}
+        style={{ height: 40 }}
         placeholder="Search by beer name!"
+        name="query"
+        value={query}
         onChangeText={handleChange}
-        value={name}
       />
 
-      <TextInput
-        style={{ height: 40, border: '1px solid black' }}
-        placeholder="Search by minimum abv!"
-        onChangeText={handleChange}
-        value={abv}
-      />
+      {/* Error message */}
+      <>
+      {message &&
+        <Text>
+          {message}
+        </Text>}
+      </>
+      
+      <>
+      {/* Loader */}
+      {loading &&
+      <Image
+        source={Loader}
+        alt="loader"
+      />}
+      </>
 
-      {beers.map(beer =>
-        <Text key={`beer-${beer.id}`}>
-          {beer.name}
-        </Text>
-      )}
+      <BeerList beers={beers} />
     </View>
   );
 };
