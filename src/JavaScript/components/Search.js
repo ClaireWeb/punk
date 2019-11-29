@@ -7,13 +7,17 @@ import BeerList from './BeerList';
 
 const Search = () => {
   const [beers, setBeers] = useState([]);
-  const [query, setQuery] = useState([]);
+  const [queryParam, setQueryParam] = useState({name:'', abv:''});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  const fetchBeers = (updatedPageNb = '', query) => {
+  const fetchBeers = (updatedPageNb = '', queryParam) => {
+    const name = queryParam.name ? `beer_name=${queryParam.name}` : '';
+    const abv = queryParam.abv ? `abv_gt=${queryParam.abv}` : '';
     const pageNumber = updatedPageNb ? `&page=${updatedPageNb}` : '';
-    const searchUrl = `?beer_name=${query}${pageNumber}&per_page=10`;
+    const searchUrl = `?${name}&${abv}${pageNumber}&per_page=10`;
+    console.log(searchUrl);
+    
     api(searchUrl)
       .then(res => {
         const resultNotFoundMsg = !res.length
@@ -29,29 +33,41 @@ const Search = () => {
       });
   };
 
-  const handleChange = async query => {
-    if (!query) {
-      setQuery(query);
+  const handleChange = async (e, info) => {
+    console.log(e, info)
+    if (!e) {
+      setQueryParam({queryParam})
       setBeers([]);
-      setMessage('');
+      console.log('setState if not e', queryParam);
     } else {
-      setQuery(query);
+      setQueryParam.info({...queryParam, info: e});
+      console.log('setState if e', queryParam);
+      
       setLoading(true);
       setMessage('');
-      await fetchBeers(1, query);
+      await fetchBeers(1, queryParam);
     }
+    
   };
 
   return (
     <View>
-      {/* Search input */}
 
+      {/* Search inputs */}
       <TextInput
         style={{ height: 40 }}
         placeholder="Search by beer name!"
-        name="query"
-        value={query}
-        onChangeText={handleChange}
+        name="name"
+        value={queryParam.name}
+        onChangeText={(e) => handleChange(e, "name")}
+      />
+
+      <TextInput
+        style={{ height: 40 }}
+        placeholder="Search by min abv!"
+        name="abv"
+        value={queryParam.abv}
+        onChangeText={(e) => handleChange(e, "abv")}
       />
 
       {/* Error message */}

@@ -5,9 +5,14 @@ const BeerList = ({ beers }) => {
   return (
     <View>
       {beers.map(beer =>
-        <Text key={`beer-${beer.id}`}>
-          {beer.name}
-        </Text>
+        <View key={`beer-${beer.id}`}>
+          <Text>
+            {beer.name}
+          </Text>
+          <Text>
+            {beer.abv}
+          </Text>
+        </View>
       )}
     </View>
   );
