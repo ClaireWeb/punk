@@ -1,15 +1,13 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { SafeAreaView, Text } from 'react-native';
 
 import Search from './components/Search';
 
-const App = () => {
+export default function App() {
   return (
-    <View>
+    <SafeAreaView>
       <Text>The Awesome Beer Xperience</Text>
       <Search />
-    </View>
+    </SafeAreaView>
   );
-};
-
-export default App;
+}

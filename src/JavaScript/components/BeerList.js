@@ -12,6 +12,11 @@ const BeerList = ({ beers }) => {
           <Text>
             {beer.abv}
           </Text>
+          {beer.food_pairing.map((item, i) =>
+            <Text key={`item-${item}`}>
+              {item}
+            </Text>
+          )}
         </View>
       )}
     </View>
