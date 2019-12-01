@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, ActivityIndicator, Picker } from 'react-native';
+import { StyleSheet, View, TextInput, Text, ActivityIndicator, Picker, Button } from 'react-native';
 import api from '../api';
-import Loader from '../../loader.gif';
 
 import BeerList from './BeerList';
 
-export default function Search () {
+const Search = () => {
   const [beers, setBeers] = useState([]);
   const [queryParam, setQueryParam] = useState({name:'', abv:'', food:''});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [currentPage, setCurrentPage] = useState(1)
 
   const fetchBeers = (updatedPageNb = '', queryParam) => {
     const name = queryParam.name ? `beer_name=${queryParam.name}` : '';
@@ -30,7 +30,8 @@ export default function Search () {
       })
       .catch(error => {
         setLoading(false);
-        setMessage('Failed to fetch the beers.');
+        setMessage('Failed to fetch the beers. Please check your connexion !');
+        setCurrentPage(1)
       });
   };
 
@@ -44,53 +45,53 @@ export default function Search () {
     });
       setBeers([]);
     } else {
+     
       setQueryParam({
         name: info === 'name' ? e : queryParam.name,
         abv: info === 'abv' ? e : queryParam.abv,
         food: info === 'food' ? e : queryParam.food
-      });
-      console.log('setState if e', queryParam);
-      
+      });    
       setLoading(true);
       setMessage('');
       await fetchBeers(1, queryParam);
-    }  
+      console.log(queryParam);
+    }
   };
+
+  const handleNextPage = () => {
+    const nextPage = currentPage + 1
+    fetchBeers(nextPage, queryParam)
+    setCurrentPage({nextPage})
+
+  }
 
   return (
     <View>
 
       {/* Search inputs */}
       <TextInput
-        style={{ height: 40 }}
-        placeholder="Search by beer name!"
+        style={styles.inputs}
+        placeholder="Search by beer name..."
         name="name"
         value={queryParam.name}
         onChangeText={(e) => handleChange(e, "name")}
       />
 
-      {/* <TextInput
-        style={{ height: 40 }}
-        placeholder="Search by min abv!"
-        name="abv"
-        value={queryParam.abv}
-        onChangeText={(e) => handleChange(e, "abv")}
-      /> */}
       <Picker
         selectedValue={queryParam.abv}
-        style={{height: 50, width: 100}}
+        style={[styles.inputs, styles.picker]}
         onValueChange={(itemValue, itemIndex) =>
           handleChange(itemValue, "abv")
         }>
-          <Picker.Item label="no limit" value="0" />
-          <Picker.Item label="light beer > 5°" value="5" />
-          <Picker.Item label="medium beer > 10°" value="10" />
-          <Picker.Item label="strong beer > 15°" value="10" />
+          <Picker.Item label="No alcohol limit" value="0" />
+          <Picker.Item label="Light beer: under 5°" value="5" />
+          <Picker.Item label="Medium beer: until 10°" value="10" />
+          <Picker.Item label="Strong beer: until 15°" value="15" />
       </Picker>
 
       <TextInput
-        style={{ height: 40 }}
-        placeholder="Search by matching food!"
+        style={styles.inputs}
+        placeholder="Search by matching food !"
         name="food"
         value={queryParam.food}
         onChangeText={(e) => handleChange(e, "food")}
@@ -99,7 +100,7 @@ export default function Search () {
       {/* Error message */}
       <>
       {message &&
-        <Text>
+        <Text style={styles.message}>
           {message}
         </Text>}
       </>
@@ -107,14 +108,40 @@ export default function Search () {
       <>
       {/* Loader */}
       {loading &&
-      <ActivityIndicator size="large" color="#0000ff"
-        source={Loader}
-        alt="loader"
-      />}
+      <ActivityIndicator size="large" color="#0000ff" animating={true} />}
       </>
 
+
       <BeerList beers={beers} />
+      
+      {beers && beers.length > 0 &&
+      <Button title="More beers" onPress={(e) => handleNextPage()} />
+      }
+
     </View>
   );
 };
 
+export default Search;
+
+const styles = StyleSheet.create({
+  inputs: {
+    justifyContent: 'center',
+    height: 30,
+    margin: 10,
+    borderWidth: 1,
+    borderColor: 'grey',
+    borderRadius: 5,
+    padding: 5,
+    backgroundColor: 'lightgrey'
+  },
+  picker: {
+    font: 14
+  },
+  message: {
+    margin: 10, 
+    fontStyle: "italic",
+    fontSize: 12,
+    textAlign: "center"
+  }
+})
