@@ -16,7 +16,7 @@ const Search = () => {
     const abv = queryParam.abv ? `abv_gt=${queryParam.abv}` : '';
     const food = queryParam.food ? `food=${queryParam.food}` : '';
     const pageNumber = updatedPageNb ? `&page=${updatedPageNb}` : '';
-    const searchUrl = `?${name}&${abv}&${food}${pageNumber}&per_page=10`;
+    const searchUrl = `?${name}&${abv}&${food}${pageNumber}&per_page=1`;
     console.log(searchUrl);
     
     api(searchUrl)
@@ -59,8 +59,7 @@ const Search = () => {
   const handleNextPage = () => {
     const nextPage = currentPage + 1
     fetchBeers(nextPage, queryParam)
-    setCurrentPage({nextPage})
-
+    setCurrentPage(nextPage)    
   }
 
   return (
@@ -82,7 +81,7 @@ const Search = () => {
         onValueChange={(itemValue, itemIndex) =>
           handleChange(itemValue, "abv")
         }>
-          <Picker.Item style={{fontSize: 8}} label="No alcohol limit" value="0" />
+          <Picker.Item label="No alcohol limit" value="0" />
           <Picker.Item label="Light beer: under 5°" value="5" />
           <Picker.Item label="Medium beer: until 10°" value="10" />
           <Picker.Item label="Strong beer: until 15°" value="15" />
@@ -107,14 +106,14 @@ const Search = () => {
       <>
       {/* Loader */}
       {loading &&
-      <ActivityIndicator size="large" color="#0000ff" animating={true} />}
+      <ActivityIndicator size="large" color="#f1cc26" animating={true} />}
       </>
 
 
       <BeerList beers={beers} />
       
       {beers && beers.length > 0 &&
-      <Button title="More beers" onPress={(e) => handleNextPage()} />
+      <Button color={'#f1cc26'} style={styles.button} title="More beers" onPress={(e) => handleNextPage()} />
       }
 
     </View>
@@ -125,7 +124,7 @@ const styles = StyleSheet.create({
   inputs: {
     justifyContent: 'center',
     height: 30,
-    margin: 10,
+    margin: 5,
     borderWidth: 1,
     borderColor: 'grey',
     borderRadius: 5,
@@ -140,6 +139,10 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     fontSize: 12,
     textAlign: "center"
+  },
+  button: {
+    width: 50,
+    borderRadius: 5
   }
 })
 
