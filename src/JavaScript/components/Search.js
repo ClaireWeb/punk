@@ -36,7 +36,6 @@ const Search = () => {
   };
 
   const handleChange = async (e, info) => {
-    console.log(e, info)
     if (!e) {
       setQueryParam({
       name: info === 'name' ? e : queryParam.name,
@@ -44,8 +43,7 @@ const Search = () => {
       food: info === 'food' ? e : queryParam.food
     });
       setBeers([]);
-    } else {
-     
+    } else {   
       setQueryParam({
         name: info === 'name' ? e : queryParam.name,
         abv: info === 'abv' ? e : queryParam.abv,
@@ -54,9 +52,9 @@ const Search = () => {
       setLoading(true);
       setMessage('');
       await fetchBeers(1, queryParam);
-      console.log(queryParam);
     }
-  };
+  };  
+
 
   const handleNextPage = () => {
     const nextPage = currentPage + 1
@@ -79,11 +77,12 @@ const Search = () => {
 
       <Picker
         selectedValue={queryParam.abv}
-        style={[styles.inputs, styles.picker]}
+        style={styles.inputs}
+        itemStyle={styles.picker}
         onValueChange={(itemValue, itemIndex) =>
           handleChange(itemValue, "abv")
         }>
-          <Picker.Item label="No alcohol limit" value="0" />
+          <Picker.Item style={{fontSize: 8}} label="No alcohol limit" value="0" />
           <Picker.Item label="Light beer: under 5°" value="5" />
           <Picker.Item label="Medium beer: until 10°" value="10" />
           <Picker.Item label="Strong beer: until 15°" value="15" />
@@ -122,8 +121,6 @@ const Search = () => {
   );
 };
 
-export default Search;
-
 const styles = StyleSheet.create({
   inputs: {
     justifyContent: 'center',
@@ -136,7 +133,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgrey'
   },
   picker: {
-    font: 14
+    fontSize: 10
   },
   message: {
     margin: 10, 
@@ -145,3 +142,6 @@ const styles = StyleSheet.create({
     textAlign: "center"
   }
 })
+
+export default Search;
+
