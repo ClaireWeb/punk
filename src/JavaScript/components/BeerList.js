@@ -13,34 +13,36 @@ const BeerList = ({ beers }) => {
     <ScrollView>
       {beers && beers.length > 0
         ? beers.map(beer =>
-            <View style={styles.card} key={`beer-${beer.id}`}>
-              <ImageBackground
-                style={styles.cardImage}
-                source={{ uri: beer.image_url }}
-              />
-              <View style={styles.cardTextContainer}>
-                <View>
-                  <Text style={styles.cardText}>
-                    {beer.name}
-                  </Text>
-                  <Text style={styles.cardText}>
-                    {beer.abv}
-                  </Text>
-                </View>
-                <Image
-                  style={{ width: 30, height: 30 }}
-                  source={require('./icons/eye.png')}
+            <View>
+              <View style={styles.card} key={`beer-${beer.id}`}>
+                <ImageBackground
+                  style={styles.cardImage}
+                  source={{ uri: beer.image_url }}
                 />
-              </View>
-              <Text style={styles.cardTagline}>
-                {beer.tagline}
-              </Text>
+                <View style={styles.cardTextContainer}>
+                  <View>
+                    <Text style={styles.cardText}>
+                      {beer.name}
+                    </Text>
+                    <Text style={styles.cardText}>
+                      {beer.abv}
+                    </Text>
+                  </View>
+                  <Image
+                    style={{ width: 30, height: 30 }}
+                    source={require('./icons/eye.png')}
+                  />
+                </View>
+                <Text style={styles.cardTagline}>
+                  {beer.tagline}
+                </Text>
 
-              {/* {beer.food_pairing.map(item =>
+                {/* {beer.food_pairing.map(item =>
                 <Text key={`item-${item}`}>
                   {item}
                 </Text>
               )} */}
+              </View>
             </View>
           )
         : <Text>No more results</Text>}

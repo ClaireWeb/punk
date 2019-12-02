@@ -11,12 +11,24 @@ const Search = () => {
   const [message, setMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1)
 
+  
+  
+
   const fetchBeers = (updatedPageNb = '', queryParam) => {
-    const name = queryParam.name ? `beer_name=${queryParam.name}` : '';
-    const abv = queryParam.abv ? `abv_gt=${queryParam.abv}` : '';
-    const food = queryParam.food ? `food=${queryParam.food}` : '';
+    let queryArray = [];
+    for (const property in queryParam) {
+      if (queryParam[property] !== '') {
+        queryArray.push(`${property}=${queryParam[property]}`)
+      }
+    }
     const pageNumber = updatedPageNb ? `&page=${updatedPageNb}` : '';
-    const searchUrl = `?${name}&${abv}&${food}${pageNumber}&per_page=1`;
+    if (queryArray.length > 0) {
+      queryArray.push(`${pageNumber}&per_page=10`)
+    }
+    let searchUrl = queryArray.join('&');
+    if (searchUrl.length > 0) {
+      searchUrl = `?${searchUrl}`
+    }
     console.log(searchUrl);
     
     api(searchUrl)
