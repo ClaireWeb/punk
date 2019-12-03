@@ -35,3 +35,7 @@ Something about the life cycle escape me... ^^ <br />
 
 The use of a `ScrollView` component seems to produce the equivalent of a componentWillMount and a componentWillReceiveProps methods...  Again a life cycle issue! <br />
 I've planed to dive into the question. ;)
+
+## The built app link
+
+[http://192.168.1.250:5000](http://192.168.1.250:5000)
