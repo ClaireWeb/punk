@@ -1,37 +1,38 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Text, ActivityIndicator, Picker, Button, ScrollView } from 'react-native';
+import { StyleSheet, View, TextInput, Text, ActivityIndicator, Picker, Button } from 'react-native';
 import api from '../api';
 
 import BeerList from './BeerList';
 
 const Search = () => {
   const [beers, setBeers] = useState([]);
-  const [queryParam, setQueryParam] = useState({beer_name:'', abv_gt:'', food:''});
+  const [queryParam, setQueryParam] = useState({beer_name:'', abv_lt:'', food:''});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1)
+  const [described, setDescribed] = useState(false)
 
+  // API request
   const fetchBeers = (updatedPageNb = '', queryParam) => {
-    let queryArray = [];
+    // URL construction
+    let searchUrl = [];
+    const pageNumber = updatedPageNb ? `page=${updatedPageNb}` : '';
     for (const property in queryParam) {
       if (queryParam[property] !== '') {
-        queryArray.push(`${property}=${queryParam[property]}`)
+        searchUrl.push(`${property}=${queryParam[property]}`)
       }
     }
-    const pageNumber = updatedPageNb ? `page=${updatedPageNb}` : '';
-    if (queryArray.length > 0) {
-      queryArray.push(`${pageNumber}&per_page=10`)
-    }
-    let searchUrl = queryArray.join('&');
     if (searchUrl.length > 0) {
+      searchUrl.push(`${pageNumber}&per_page=10`)
+      searchUrl = searchUrl.join('&');
       searchUrl = `?${searchUrl}`
     }
-    console.log(searchUrl);
     
+    // Fetch the data
     api(searchUrl)
       .then(res => {
         const resultNotFoundMsg = !res.length
-          ? 'There are no more search results. Please try a new search'
+          ? 'No more results. Please try a new search !'
           : '';
         setBeers(res);
         setMessage(resultNotFoundMsg);
@@ -44,18 +45,19 @@ const Search = () => {
       });
   };
 
+  // Catch the users actions on inputs
   const handleChange = async (e, info) => {
     if (!e) {
       setQueryParam({
       beer_name: info === 'beer_name' ? e : queryParam.beer_name,
-      abv_gt: info === 'abv_gt' ? e : queryParam.abv_gt,
+      abv_lt: info === 'abv_lt' ? e : queryParam.abv_lt,
       food: info === 'food' ? e : queryParam.food
     });
       setBeers([]);
     } else {   
       setQueryParam({
         beer_name: info === 'beer_name' ? e : queryParam.beer_name,
-        abv_gt: info === 'abv_gt' ? e : queryParam.abv_gt,
+        abv_lt: info === 'abv_lt' ? e : queryParam.abv_lt,
         food: info === 'food' ? e : queryParam.food
       });    
       setLoading(true);
@@ -64,16 +66,22 @@ const Search = () => {
     }
   };  
 
-
+  // Display the next page by pressing the button
   const handleNextPage = () => {
     const nextPage = currentPage + 1
     fetchBeers(nextPage, queryParam)
     setCurrentPage(nextPage)    
   }
 
-  return (
-    <View>
+  // Display more informations on Beer Cards
+  const toggleDescription = beerId => {
+    beers.map(beer =>
+      beerId === beer.id ? setDescribed(!described) : described
+    )
+  };
 
+  return (
+    <View style={{padding: 10}}>
       {/* Search inputs */}
       <TextInput
         style={styles.inputs}
@@ -84,11 +92,11 @@ const Search = () => {
       />
 
       <Picker
-        selectedValue={queryParam.abv_gt}
-        style={styles.inputs}
+        selectedValue={queryParam.abv_lt}
+        style={[styles.inputs, {color: 'grey'}]}
         itemStyle={styles.picker}
         onValueChange={(itemValue, itemIndex) =>
-          handleChange(itemValue, "abv_gt")
+          handleChange(itemValue, "abv_lt")
         }>
           <Picker.Item label="No alcohol limit" value="0" />
           <Picker.Item label="Light beer: under 5°" value="5" />
@@ -115,31 +123,49 @@ const Search = () => {
       <>
       {/* Loader */}
       {loading &&
-      <ActivityIndicator size="large" color="#f1cc26" animating={true} />}
+      <ActivityIndicator size="large" color="#FFD700" animating={true} />}
       </>
 
-      <ScrollView>
-        <BeerList beers={beers} />
-      </ScrollView>  
+      {/* Search results */}
+      {(beers && beers.length > 0 )
+      && <BeerList beers={beers} toggleDescription={toggleDescription} described={described}/>}
+
+      {/* Button more */}
+      {(beers && beers.length > 0 )
+      && <Button color={'#FFD700'} title="More beers" onPress={(e) => handleNextPage()} />
+      }
       
-      {beers && beers.length > 0 &&
-      <Button color={'#f1cc26'} style={styles.button} title="More beers" onPress={(e) => handleNextPage()} />
+      {/* Welcome message */}
+      {(!beers || beers.length === 0) &&
+      <View style={{ margin: 30, paddingVertical: 10 }}>
+        <Text style={[styles.welcome, { fontWeight: 'bold', letterSpacing: 3 }]}>Welcome to the American Punk beer application !</Text>
+        <Text style={[styles.welcome, {}]}>You can search a beer by its name, filter by alcohol percentage, or by matching food.</Text>
+        <Text style={[styles.welcome, {}]}>Click on the eye to know everything about your favorite beer!</Text>         
+      </View>
       }
 
     </View>
   );
 };
 
+export default Search;
+
 const styles = StyleSheet.create({
+  welcome: {
+    fontSize: 16,
+    textAlign: 'center',
+    paddingVertical: 10,
+    lineHeight: 25
+  },
   inputs: {
     justifyContent: 'center',
-    height: 30,
+    height: 40,
     margin: 5,
     borderWidth: 1,
     borderColor: 'grey',
     borderRadius: 5,
     padding: 5,
-    backgroundColor: 'lightgrey'
+    backgroundColor: '#f6f6e9'
   },
   picker: {
     fontSize: 10
@@ -149,12 +175,5 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     fontSize: 12,
     textAlign: "center"
-  },
-  button: {
-    width: 50,
-    borderRadius: 5
   }
-})
-
-export default Search;
-
+});

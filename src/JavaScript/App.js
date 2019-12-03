@@ -1,13 +1,22 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, Text } from 'react-native';
+import {
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  StatusBar,
+  ScrollView
+} from 'react-native';
 
 import Search from './components/Search';
 
 const App = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>The Beer Xperience</Text>
-      <Search />
+      <StatusBar hidden={true} />
+      <ScrollView>
+        <Text style={styles.title}>The American Beer Xperience</Text>
+        <Search />
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -23,9 +32,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: 'center',
     color: '#FEFEFE',
-    paddingVertical: 15,
+    paddingVertical: 20,
     marginBottom: 10,
-    backgroundColor: '#f1cc26',
+    backgroundColor: '#FFD700',
     shadowColor: '#464646',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
