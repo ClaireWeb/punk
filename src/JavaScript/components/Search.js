@@ -27,7 +27,6 @@ const Search = () => {
       searchUrl = searchUrl.join('&');
       searchUrl = `?${searchUrl}`
     }
-    
     // Fetch the data
     api(searchUrl)
       .then(res => {
@@ -62,7 +61,7 @@ const Search = () => {
       });    
       setLoading(true);
       setMessage('');
-      await fetchBeers(1, queryParam);
+      await fetchBeers(currentPage, queryParam);
     }
   };  
 

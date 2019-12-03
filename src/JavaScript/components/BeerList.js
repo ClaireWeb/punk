@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, ImageBackground } from 'react-native';
+
 import BeerDescription from './BeerDescription';
 
 const BeerList = ({ beers, toggleDescription, described }) => {
@@ -40,11 +41,11 @@ const BeerList = ({ beers, toggleDescription, described }) => {
 
           <View
             style={[
-              styles.cardTextContainer,
+              styles.cardInfoContainer,
               described && { backgroundColor: 'none' }
             ]}
           >
-            <View style={described && { opacity: 0 }}>
+            <View style={[styles.cardInfoTxt, described && { opacity: 0 }]}>
               <Text style={[styles.cardText, { fontWeight: 'bold' }]}>
                 {beer.name}
               </Text>
@@ -98,24 +99,28 @@ const styles = StyleSheet.create({
     height: 400,
     alignSelf: 'center'
   },
-  cardTextContainer: {
+  cardInfoContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     width: '100%',
     height: 80,
     padding: 20,
     backgroundColor: '#f6f6e9',
     opacity: 0.9,
     position: 'absolute',
-    bottom: 37,
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    bottom: 37
+  },
+  cardInfoTxt: {
+    width: '80%'
   },
   cardText: {
     color: 'grey',
     padding: 5,
     fontSize: 16,
-    opacity: 1
+    opacity: 1,
+    flexWrap: 'wrap'
   },
   cardTagline: {
     textAlign: 'center',
