@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 80,
     padding: 20,
-    backgroundColor: 'lightgrey',
+    backgroundColor: '#f6f6e9',
     opacity: 0.9,
     position: 'absolute',
     bottom: 37,
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: 10,
     fontStyle: 'italic',
-    color: '#f1cc26',
+    color: '#FFD700',
     backgroundColor: 'grey',
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5

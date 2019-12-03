@@ -14,7 +14,7 @@ const App = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar hidden={true} />
       <ScrollView>
-        <Text style={styles.title}>The Beer Xperience</Text>
+        <Text style={styles.title}>The American Beer Xperience</Text>
         <Search />
       </ScrollView>
     </SafeAreaView>
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     color: '#FEFEFE',
     paddingVertical: 20,
     marginBottom: 10,
-    backgroundColor: '#f1cc26',
+    backgroundColor: '#FFD700',
     shadowColor: '#464646',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,

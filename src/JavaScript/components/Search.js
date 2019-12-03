@@ -93,7 +93,7 @@ const Search = () => {
 
       <Picker
         selectedValue={queryParam.abv_lt}
-        style={styles.inputs}
+        style={[styles.inputs, {color: 'grey'}]}
         itemStyle={styles.picker}
         onValueChange={(itemValue, itemIndex) =>
           handleChange(itemValue, "abv_lt")
@@ -123,15 +123,25 @@ const Search = () => {
       <>
       {/* Loader */}
       {loading &&
-      <ActivityIndicator size="large" color="#f1cc26" animating={true} />}
+      <ActivityIndicator size="large" color="#FFD700" animating={true} />}
       </>
 
       {/* Search results */}
-      {beers && beers.length > 0 && <BeerList beers={beers} toggleDescription={toggleDescription} described={described}/> }
-      
+      {(beers && beers.length > 0 )
+      && <BeerList beers={beers} toggleDescription={toggleDescription} described={described}/>}
+
       {/* Button more */}
-      {beers && beers.length > 0 &&
-      <Button color={'#f1cc26'} title="More beers" onPress={(e) => handleNextPage()} />
+      {(beers && beers.length > 0 )
+      && <Button color={'#FFD700'} title="More beers" onPress={(e) => handleNextPage()} />
+      }
+      
+      {/* Welcome message */}
+      {(!beers || beers.length === 0) &&
+      <View style={{ margin: 30, paddingVertical: 10 }}>
+        <Text style={[styles.welcome, { fontWeight: 'bold', letterSpacing: 3 }]}>Welcome to the American Punk beer application !</Text>
+        <Text style={[styles.welcome, {}]}>You can search a beer by its name, filter by alcohol percentage, or by matching food.</Text>
+        <Text style={[styles.welcome, {}]}>Click on the eye to know everything about your favorite beer!</Text>         
+      </View>
       }
 
     </View>
@@ -141,6 +151,12 @@ const Search = () => {
 export default Search;
 
 const styles = StyleSheet.create({
+  welcome: {
+    fontSize: 16,
+    textAlign: 'center',
+    paddingVertical: 10,
+    lineHeight: 25
+  },
   inputs: {
     justifyContent: 'center',
     height: 40,
@@ -149,7 +165,7 @@ const styles = StyleSheet.create({
     borderColor: 'grey',
     borderRadius: 5,
     padding: 5,
-    backgroundColor: 'lightgrey'
+    backgroundColor: '#f6f6e9'
   },
   picker: {
     fontSize: 10
