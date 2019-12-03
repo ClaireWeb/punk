@@ -53,7 +53,7 @@ const Search = () => {
       food: info === 'food' ? e : queryParam.food
     });
       setBeers([]);
-    } else {   
+    } else  if (e) {   
       setQueryParam({
         beer_name: info === 'beer_name' ? e : queryParam.beer_name,
         abv_lt: info === 'abv_lt' ? e : queryParam.abv_lt,
