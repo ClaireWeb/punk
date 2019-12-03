@@ -4,39 +4,37 @@ import { StyleSheet, Text, View, ImageBackground, Image } from 'react-native';
 const BeerList = ({ beers }) => {
   return (
     <View>
-      {beers && beers.length > 0
-        ? beers.map(beer =>
-            <View style={styles.card} key={`beer-${beer.id}`}>
-              <ImageBackground
-                style={styles.cardImage}
-                source={{ uri: beer.image_url }}
-              />
-              <View style={styles.cardTextContainer}>
-                <View>
-                  <Text style={styles.cardText}>
-                    {beer.name}
-                  </Text>
-                  <Text style={styles.cardText}>
-                    {beer.abv}
-                  </Text>
-                </View>
-                <Image
-                  style={{ width: 30, height: 30 }}
-                  source={require('./icons/eye.png')}
-                />
-              </View>
-              <Text style={styles.cardTagline}>
-                {beer.tagline}
+      {beers.map(beer =>
+        <View style={styles.card} key={`beer-${beer.id}`}>
+          <ImageBackground
+            style={styles.cardImage}
+            source={{ uri: beer.image_url }}
+          />
+          <View style={styles.cardTextContainer}>
+            <View>
+              <Text style={styles.cardText}>
+                {beer.name}
               </Text>
+              <Text style={styles.cardText}>
+                {beer.abv}
+              </Text>
+            </View>
+            <Image
+              style={{ width: 30, height: 30 }}
+              source={require('./icons/eye.png')}
+            />
+          </View>
+          <Text style={styles.cardTagline}>
+            {beer.tagline}
+          </Text>
 
-              {/* {beer.food_pairing.map(item =>
+          {/* {beer.food_pairing.map(item =>
                 <Text key={`item-${item}`}>
                   {item}
                 </Text>
               )} */}
-            </View>
-          )
-        : <Text>No more results</Text>}
+        </View>
+      )}
     </View>
   );
 };
@@ -68,7 +66,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgrey',
     opacity: 0.8,
     position: 'absolute',
-    bottom: 26,
+    bottom: 37,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -80,7 +78,7 @@ const styles = StyleSheet.create({
   },
   cardTagline: {
     textAlign: 'center',
-    paddingVertical: 5,
+    paddingVertical: 10,
     fontStyle: 'italic',
     color: '#f1cc26',
     backgroundColor: 'grey',

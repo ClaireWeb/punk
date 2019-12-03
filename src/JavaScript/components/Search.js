@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Text, ActivityIndicator, Picker, Button, ScrollView } from 'react-native';
+import { StyleSheet, View, TextInput, Text, ActivityIndicator, Picker, Button } from 'react-native';
 import api from '../api';
 
 import BeerList from './BeerList';
 
 const Search = () => {
   const [beers, setBeers] = useState([]);
-  const [queryParam, setQueryParam] = useState({beer_name:'', abv_gt:'', food:''});
+  const [queryParam, setQueryParam] = useState({beer_name:'', abv_lt:'', food:''});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1)
+  const [described, setDescribed] = useState(false)
+
 
   const fetchBeers = (updatedPageNb = '', queryParam) => {
     let queryArray = [];
@@ -48,14 +50,14 @@ const Search = () => {
     if (!e) {
       setQueryParam({
       beer_name: info === 'beer_name' ? e : queryParam.beer_name,
-      abv_gt: info === 'abv_gt' ? e : queryParam.abv_gt,
+      abv_lt: info === 'abv_lt' ? e : queryParam.abv_lt,
       food: info === 'food' ? e : queryParam.food
     });
       setBeers([]);
     } else {   
       setQueryParam({
         beer_name: info === 'beer_name' ? e : queryParam.beer_name,
-        abv_gt: info === 'abv_gt' ? e : queryParam.abv_gt,
+        abv_lt: info === 'abv_lt' ? e : queryParam.abv_lt,
         food: info === 'food' ? e : queryParam.food
       });    
       setLoading(true);
@@ -64,12 +66,18 @@ const Search = () => {
     }
   };  
 
-
   const handleNextPage = () => {
     const nextPage = currentPage + 1
     fetchBeers(nextPage, queryParam)
     setCurrentPage(nextPage)    
   }
+
+  const toggleDescription = beerId =>
+    setBeers(
+      beers.map(beer =>
+        beerId === beer.id ? setDescribed(!described) : beer
+      )
+    );
 
   return (
     <View>
@@ -84,11 +92,11 @@ const Search = () => {
       />
 
       <Picker
-        selectedValue={queryParam.abv_gt}
+        selectedValue={queryParam.abv_lt}
         style={styles.inputs}
         itemStyle={styles.picker}
         onValueChange={(itemValue, itemIndex) =>
-          handleChange(itemValue, "abv_gt")
+          handleChange(itemValue, "abv_lt")
         }>
           <Picker.Item label="No alcohol limit" value="0" />
           <Picker.Item label="Light beer: under 5°" value="5" />
@@ -118,9 +126,7 @@ const Search = () => {
       <ActivityIndicator size="large" color="#f1cc26" animating={true} />}
       </>
 
-      <ScrollView>
-        <BeerList beers={beers} />
-      </ScrollView>  
+      {beers && beers.length > 0 && <BeerList beers={beers} toggleDescription={toggleDescription} /> }
       
       {beers && beers.length > 0 &&
       <Button color={'#f1cc26'} style={styles.button} title="More beers" onPress={(e) => handleNextPage()} />
@@ -133,7 +139,7 @@ const Search = () => {
 const styles = StyleSheet.create({
   inputs: {
     justifyContent: 'center',
-    height: 30,
+    height: 40,
     margin: 5,
     borderWidth: 1,
     borderColor: 'grey',
