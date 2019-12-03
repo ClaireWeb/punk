@@ -12,28 +12,27 @@ const Search = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [described, setDescribed] = useState(false)
 
-
+  // API request
   const fetchBeers = (updatedPageNb = '', queryParam) => {
-    let queryArray = [];
+    // URL construction
+    let searchUrl = [];
+    const pageNumber = updatedPageNb ? `page=${updatedPageNb}` : '';
     for (const property in queryParam) {
       if (queryParam[property] !== '') {
-        queryArray.push(`${property}=${queryParam[property]}`)
+        searchUrl.push(`${property}=${queryParam[property]}`)
       }
     }
-    const pageNumber = updatedPageNb ? `page=${updatedPageNb}` : '';
-    if (queryArray.length > 0) {
-      queryArray.push(`${pageNumber}&per_page=10`)
-    }
-    let searchUrl = queryArray.join('&');
     if (searchUrl.length > 0) {
+      searchUrl.push(`${pageNumber}&per_page=10`)
+      searchUrl = searchUrl.join('&');
       searchUrl = `?${searchUrl}`
     }
-    console.log(searchUrl);
     
+    // Fetch the data
     api(searchUrl)
       .then(res => {
         const resultNotFoundMsg = !res.length
-          ? 'There are no more search results. Please try a new search'
+          ? 'No more results. Please try a new search !'
           : '';
         setBeers(res);
         setMessage(resultNotFoundMsg);
@@ -46,6 +45,7 @@ const Search = () => {
       });
   };
 
+  // Catch the users actions on inputs
   const handleChange = async (e, info) => {
     if (!e) {
       setQueryParam({
@@ -66,22 +66,22 @@ const Search = () => {
     }
   };  
 
+  // Display the next page by pressing the button
   const handleNextPage = () => {
     const nextPage = currentPage + 1
     fetchBeers(nextPage, queryParam)
     setCurrentPage(nextPage)    
   }
 
-  const toggleDescription = beerId =>
-    setBeers(
-      beers.map(beer =>
-        beerId === beer.id ? setDescribed(!described) : beer
-      )
-    );
+  // Display more informations on Beer Cards
+  const toggleDescription = beerId => {
+    beers.map(beer =>
+      beerId === beer.id ? setDescribed(!described) : described
+    )
+  };
 
   return (
-    <View>
-
+    <View style={{padding: 10}}>
       {/* Search inputs */}
       <TextInput
         style={styles.inputs}
@@ -126,15 +126,19 @@ const Search = () => {
       <ActivityIndicator size="large" color="#f1cc26" animating={true} />}
       </>
 
-      {beers && beers.length > 0 && <BeerList beers={beers} toggleDescription={toggleDescription} /> }
+      {/* Search results */}
+      {beers && beers.length > 0 && <BeerList beers={beers} toggleDescription={toggleDescription} described={described}/> }
       
+      {/* Button more */}
       {beers && beers.length > 0 &&
-      <Button color={'#f1cc26'} style={styles.button} title="More beers" onPress={(e) => handleNextPage()} />
+      <Button color={'#f1cc26'} title="More beers" onPress={(e) => handleNextPage()} />
       }
 
     </View>
   );
 };
+
+export default Search;
 
 const styles = StyleSheet.create({
   inputs: {
@@ -155,12 +159,5 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     fontSize: 12,
     textAlign: "center"
-  },
-  button: {
-    width: 50,
-    borderRadius: 5
   }
-})
-
-export default Search;
-
+});
