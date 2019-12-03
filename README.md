@@ -24,3 +24,14 @@ You will also see any lint errors in the console.
 
 Builds the app for production to the `build` folder.<br />
 It correctly bundles React in production mode and optimizes the build for the best performance.
+
+## Thanks for this very interesting exercise !!
+
+What I didn't debug: 
+
+The handleChange function is called on 3 TextInputs. <br />
+When you search something in one of the inputs, the fetch function works, but the state is empty. Though, the state is filled on every next changes. <br />
+Something about the life cycle escape me... ^^ <br />
+
+The use of a `ScrollView` component seems to produce the equivalent of a componentWillMount and a componentWillReceiveProps methods...  Again a life cycle issue! <br />
+I've planed to dive into the question. ;)
